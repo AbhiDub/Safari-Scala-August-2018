@@ -16,6 +16,28 @@ object DateStuff {
     (day + 13 * (m + 1) / 5 + y + y / 4 - y / 100 + y / 400) % 7
   }
 
+  object DaysOfWeek extends Enumeration {
+    val SATURDAY, SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY = Value;
+  }
+
+//  def namedDayOfWeek(day: Int, month: Int, year: Int): String =
+//    DaysOfWeek(zellers(day, month, year)).toString
+
+  def namedDayOfWeek(d: Int, m: Int, y: Int): String = {
+    val dow = zellers(d, m, y)
+    dow match {
+      case 0 => "Saturday"
+      case 1 => "Sunday"
+      case 2 => "Monday"
+      case 3 => "Tuesday"
+      case 4 => "Wednesday"
+      case 5 => "Thursday"
+      case 6 => "Friday"
+//      case _ => "Bad value"
+      case x => s"Bad value $x"
+    }
+  }
+
   def main(args: Array[String]): Unit = {
 //    val today = zellers(15, 8, 2018)
 //    val today = zellers(month = 8, day = 15, year = 2018)
@@ -35,8 +57,11 @@ object DateStuff {
     while (idx < dates.length) {
 //      println(s"> ${dates(idx)}")// shorthand
       println(s"> ${dates.apply(idx)}")  // expanded form
+      idx += 1
     }
 //    dates(0) = (9, 9, 9999) // shorthand
     dates.update(0, (9, 9, 9999)) // longhand
+
+    println(s"Start of 2000 is number ${namedDayOfWeek(1, 1, 2000)}")
   }
 }
