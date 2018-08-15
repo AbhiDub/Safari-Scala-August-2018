@@ -1,10 +1,18 @@
 package datestuff
 
+import java.sql.SQLException
+
+import scala.util.{Failure, Success, Try}
+
 object DateStuff {
   def zellers(tuple: (Int, Int, Int)): Int =
     zellers(tuple._1, tuple._2, tuple._3)
 
+  @throws(classOf[SQLException])
   def zellers(day: Int, month: Int, year: Int = 2018): Int = {
+    if (day == 99) throw new SQLException("DB crashed!")
+    if (day < 1 || day > 31) throw new IllegalArgumentException("Bad day")
+
 //    val m = if (month < 3) month + 12 else month
 //    val y = if (month < 3) year - 1 else year
 
@@ -63,5 +71,25 @@ object DateStuff {
     dates.update(0, (9, 9, 9999)) // longhand
 
     println(s"Start of 2000 is number ${namedDayOfWeek(1, 1, 2000)}")
+
+    try {
+      val strange = zellers(99, 1, 1000)
+      println(s"Day is $strange")
+    } catch {
+      case x: IllegalArgumentException =>
+        println(s"got a problem: ${x.getMessage}")
+      case x: SQLException => println("Wait, who opened a database!")
+      case x: Throwable => println("Random problem")
+    }
+    println("Still going...")
+
+    // argument to Try.apply is "pass by name"
+    // not evaluated until INSIDE the method.
+    val td = Try(zellers(99, 1, 1))
+    td match {
+      case Success(d) => println(s"The day of week is number $d")
+      case Failure(e) => println(s"Got an exception, message is ${e.getMessage}")
+    }
+
   }
 }
